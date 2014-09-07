@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify, Response
 import requests
 from requests_oauthlib import OAuth2, OAuth1
 import json
@@ -23,16 +23,35 @@ headers1 = getTokenGivenUsernamePasswordAndConsumerKey('user46@concurdisrupt.com
 #oauth
 auth = {
     'Authorization': "OAuth %s" %  TOKEN,
-#    'Accept':'application/json',
+    'Accept':'application/xml',
     }
 
 @app.route('/')
 def hello_world():
     #return json.dumps(getTokenGivenUsernamePasswordAndConsumerKey('user46@concurdisrupt.com', 'disrupt', KEY))
-    #getting an itinerary
+
+    #Report Digests
+    #resp = requests.get('https://www.concursolutions.com/api/v3.0/expense/reportdigests',headers = auth)
+
+    #Locations - NA
+    #resp = requests.get('https://www.concursolutions.com/api/v3.0/insights/latestbookings/',headers = auth)
+
+    #Invoices - NA
+    #resp = requests.get('https://www.concursolutions.com/api/v3.0/invoice/taxrequests/',headers = auth)
+
+    #Expense Entries
+    #resp = requests.get('https://www.concursolutions.com/api/v3.0/expense/entries/',headers = auth)
+
+    #Expense Entries
     resp = requests.get('https://www.concursolutions.com/api/travel/trip/v1.1',headers = auth)
-    print resp.content
-    return ElementTree.fromstring(resp.content)
+
+    print resp.text
+    #print resp.content
+    print dir(ElementTree.fromstring(resp.text))
+    print ElementTree.fromstring(resp.text).items()
+    print type(ElementTree.fromstring(resp.text))
+    return Response(resp.text, mimetype='application/xml')
+    #return jsonify(json.loads(resp.text))
 
 if __name__ == '__main__':
     app.run(debug = True)

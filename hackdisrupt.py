@@ -36,11 +36,11 @@ def itineraries():
     return Response(resp.text, mimetype='application/xml')
 
 @app.route('/itinerary/info')
-def itinerary_info():
+def itinerary_info(TripID = 'nHyQT$pcgFtPlchwnqtoRjd1MgMLqRPunn4pQShg'):
     """
      Returns all itineraries
     """
-    TripID = 'nHyQT$pcgFtPlchwTlyhTG$pjyel9xI$sVJ9OTTrUw'
+    #TripID = 'nHyQT$pcgFtPlchwTlyhTG$pjyel9xI$sVJ9OTTrUw'
     resp = requests.get('https://www.concursolutions.com/api/travel/trip/v1.1/%s' % TripID,headers = auth)
     root = BeautifulSoup(resp.text)
     note=""
@@ -71,17 +71,43 @@ def itinerary_info():
             """ % (
                 root.bookings.findAll('booking')[0].hotel.find('name').text,
                 )
-    return Response(resp.text, mimetype='application/xml')
+    #Counting number of Taxi Cabs
+    resp = requests.get('https://www.concursolutions.com/api/v3.0/expense/entries/',headers = auth)
+    root = BeautifulSoup(resp.text)
+    cont_cabs = 0
+    for t in root.findAll('expensetypecode'):
+        if t.text == 'TAXIX':
+            cont_cabs = cont_cabs + 1
+    note += """
+        <div>
+            <ul><li><strong>Taxi</strong></li></ul>
+        </div>
+        <div>The last time you've been there you used %s taxi cabs.</div>
+        <div><en-todo/> Download <a href="http://www.uber.com/">Uber</a> (it works the best in %s)</div>
+        <hr></hr>
+        """% (
+        cont_cabs,
+        'NYC',
+    )
+    return note
+    #return Response(resp.text, mimetype='application/xml')
+
+@app.route('/itinerary/all')
+def all_itinerary_info():
+    resp = requests.get('https://www.concursolutions.com/api/travel/trip/v1.1',headers = auth)
+    root = BeautifulSoup(resp.text)
+    note = ""
+    for i in root.findAll("itineraryinfo"):
+        note += itinerary_info(i.tripid.text)
+
+    return note
 
 @app.route('/entries/')
 def entries():
     """
      Returns all expense entries
     """
-
     #Expense Entries
-    headers = auth
-    headers['']
     resp = requests.get('https://www.concursolutions.com/api/v3.0/expense/entries/',headers = auth)
     return Response(resp.text, mimetype='application/xml')
 

@@ -44,14 +44,7 @@ def hello_world():
 
     #Expense Entries
     resp = requests.get('https://www.concursolutions.com/api/travel/trip/v1.1',headers = auth)
-
-    print resp.text
-    #print resp.content
-    print dir(ElementTree.fromstring(resp.text))
-    print ElementTree.fromstring(resp.text).items()
-    print type(ElementTree.fromstring(resp.text))
     return Response(resp.text, mimetype='application/xml')
-    #return jsonify(json.loads(resp.text))
 
 if __name__ == '__main__':
     app.run(debug = True)

@@ -35,4 +35,4 @@ def getTokenGivenUsernamePasswordAndConsumerKey(username, password, consumerKey)
     return json.loads(r.content)
 
 if __name__ == '__main__':
-    print getTokenGivenUsernamePasswordAndConsumerKey('user1@concurdisrupt.com', 'disrupt', '<Insert Concur consumer key here>')
+    print getTokenGivenUsernamePasswordAndConsumerKey('user46@concurdisrupt.com', 'disrupt', 'mbGLfEhU1rUUG8IOImdmVt')['Access_Token']['Token']

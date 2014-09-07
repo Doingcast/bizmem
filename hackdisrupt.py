@@ -87,6 +87,10 @@ hash_hex = binascii.hexlify(hash)
 flight_bool, history_bool, taxi_bool, hotel_bool, weather_bool, tip_bool = True, True, True, True, True, True
 
 @app.route('/')
+def home():
+    pass
+
+@app.route('/itineraries/')
 def itineraries():
     """
      Returns all itineraries
@@ -125,7 +129,7 @@ def itinerary_info(TripID = 'nHyQT$pcgFtPlchwnqtoRjd1MgMLqRPunn4pQShg'):
             <ul><li><strong>Hotel</strong></li></ul>
         </div>
         <div>You're staying at:</div>
-        <div>%s</div>
+        <div><a href="https://www.google.com/maps/preview?q=Times+Square+Hilton+New+York">%s</div>
         <hr></hr>
             """ % (
                 root.bookings.findAll('booking')[0].hotel.find('name').text,

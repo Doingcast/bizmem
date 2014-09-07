@@ -29,7 +29,7 @@ auth = {
 @app.route('/')
 def hello_world():
     #return json.dumps(getTokenGivenUsernamePasswordAndConsumerKey('user46@concurdisrupt.com', 'disrupt', KEY))
-    #Voltando um itinerario
+    #getting an itinerary
     resp = requests.get('https://www.concursolutions.com/api/travel/trip/v1.1',headers = auth)
     print resp.content
     return ElementTree.fromstring(resp.content)

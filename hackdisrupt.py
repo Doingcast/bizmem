@@ -43,9 +43,10 @@ def itinerary_info():
     TripID = 'nHyQT$pcgFtPlchwTlyhTG$pjyel9xI$sVJ9OTTrUw'
     resp = requests.get('https://www.concursolutions.com/api/travel/trip/v1.1/%s' % TripID,headers = auth)
     root = BeautifulSoup(resp.text)
+    note=""
     for booking in root.bookings.findAll('booking'):
         for air in booking.findAll('air'):
-            resp = """
+            note += """
         <div>
             <ul><li><strong>Flight</strong></li></ul>
         </div>
@@ -59,6 +60,16 @@ def itinerary_info():
                 air.startcitycode.text,
                 (datetime.strptime(air.startdatelocal.text, '%Y-%m-%dT%H:%M:%S') - timedelta(hours=3)).strftime("%m/%d - %H:%M"),
                 datetime.strptime(air.startdatelocal.text, '%Y-%m-%dT%H:%M:%S').strftime("%H:%M"),
+                )
+    note += """
+        <div>
+            <ul><li><strong>Hotel</strong></li></ul>
+        </div>
+        <div>You're staying at:</div>
+        <div>%s</div>
+        <hr></hr>
+            """ % (
+                root.bookings.findAll('booking')[0].hotel.find('name').text,
                 )
     return Response(resp.text, mimetype='application/xml')
 

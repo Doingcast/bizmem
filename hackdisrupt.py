@@ -4,6 +4,7 @@ from requests_oauthlib import OAuth2, OAuth1
 import json
 from xml.etree import ElementTree
 from ConcurOAuthPython import getbasic, getTokenGivenUsernamePasswordAndConsumerKey
+from BeautifulSoup import BeautifulSoup
 
 #Constants
 USER = "user46@concurdisrupt.com"
@@ -27,27 +28,48 @@ auth = {
     }
 
 @app.route('/')
-def hello_world():
-    #return json.dumps(getTokenGivenUsernamePasswordAndConsumerKey('user46@concurdisrupt.com', 'disrupt', KEY))
-
-    #Report Digests
-    #resp = requests.get('https://www.concursolutions.com/api/v3.0/expense/reportdigests',headers = auth)
-
-    #Locations - NA
-    #resp = requests.get('https://www.concursolutions.com/api/v3.0/insights/latestbookings/',headers = auth)
-
-    #Invoices - NA
-    #resp = requests.get('https://www.concursolutions.com/api/v3.0/invoice/taxrequests/',headers = auth)
-
-    #Expense Entries
-    #resp = requests.get('https://www.concursolutions.com/api/v3.0/expense/entries/',headers = auth)
-
-
-    #Locations
-    #resp = requests.get('https://www.concursolutions.com/api/v3.0/common/locations/',headers = auth)
-
-    #Expense Entries
+def itineraries():
+    """
+     Returns all itineraries
+    """
     resp = requests.get('https://www.concursolutions.com/api/travel/trip/v1.1',headers = auth)
+    return Response(resp.text, mimetype='application/xml')
+
+@app.route('/itinerary/info')
+def itinerary_info():
+    """
+     Returns all itineraries
+    """
+    TripID = 'nHyQT$pcgFtPlchwTlyhTG$pjyel9xI$sVJ9OTTrUw'
+    resp = requests.get('https://www.concursolutions.com/api/travel/trip/v1.1/%s' % TripID,headers = auth)
+    root = BeautifulSoup(resp.text)
+    for booking in root.bookings.findAll('booking'):
+        for air in booking.findAll('air'):
+            resp = """
+        <div>
+            <ul><li><strong>Flight</strong></li></ul>
+        </div>
+        <div>%s -&gt; %s</div>
+        <div><en-todo/> arrive on %s by 4:20pm</div>
+        <div><en-todo/> takeoff is at 7:20pm</div>
+        <hr></hr>
+            """ % (
+                air.startcitycode.text,
+                air.endcitycode.text,
+                air.startcitycode.text,
+                )
+    return Response(resp.text, mimetype='application/xml')
+
+@app.route('/entries/')
+def entries():
+    """
+     Returns all expense entries
+    """
+
+    #Expense Entries
+    headers = auth
+    headers['']
+    resp = requests.get('https://www.concursolutions.com/api/v3.0/expense/entries/',headers = auth)
     return Response(resp.text, mimetype='application/xml')
 
 if __name__ == '__main__':

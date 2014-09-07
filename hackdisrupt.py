@@ -5,7 +5,7 @@ import json
 from xml.etree import ElementTree
 from ConcurOAuthPython import getbasic, getTokenGivenUsernamePasswordAndConsumerKey
 from BeautifulSoup import BeautifulSoup
-
+from datetime import datetime, timedelta
 #Constants
 USER = "user46@concurdisrupt.com"
 PWD = "disrupt"
@@ -50,13 +50,15 @@ def itinerary_info():
             <ul><li><strong>Flight</strong></li></ul>
         </div>
         <div>%s -&gt; %s</div>
-        <div><en-todo/> arrive on %s by 4:20pm</div>
-        <div><en-todo/> takeoff is at 7:20pm</div>
+        <div><en-todo/> arrive on %s by %s</div>
+        <div><en-todo/> takeoff is at %s</div>
         <hr></hr>
             """ % (
                 air.startcitycode.text,
                 air.endcitycode.text,
                 air.startcitycode.text,
+                (datetime.strptime(air.startdatelocal.text, '%Y-%m-%dT%H:%M:%S') - timedelta(hours=3)).strftime("%m/%d - %H:%M"),
+                datetime.strptime(air.startdatelocal.text, '%Y-%m-%dT%H:%M:%S').strftime("%H:%M"),
                 )
     return Response(resp.text, mimetype='application/xml')
 

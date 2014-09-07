@@ -54,7 +54,7 @@ note = Types.Note()
 note.title = "Business Travel to %s" % (city_name)
 
 # Anexando uma imagem:
-image = open( os.path.join(SITE_ROOT, 'SP.png'), 'rb').read()
+image = open( os.path.join(SITE_ROOT, 'NY.png'), 'rb').read()
 
 md5 = hashlib.md5()
 md5.update(image)
